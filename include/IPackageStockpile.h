@@ -4,14 +4,11 @@
 #include "Typy.h"
 #include "Package.hpp"
 
-class IPackageDepot
-{
+class IPackageStockpile {
 public:
-    virtual void push(Package &&other) = 0;
-
+    virtual void push(Package &&elem) = 0;
     virtual bool empty() const = 0;
-    virtual int size() const = 0 ;
-    virtual size_t size() const = 0;
+    virtual size_t size() const = 0 ;
 
 private:
 
