@@ -1,7 +1,23 @@
 
+enum class PackageQueueType {
+    FIFO, LIFO
+};
 
-//
-// Created by Nadia on 12.12.2019.
-//
 
-pisze cos
+int main() {
+
+    //przykladowy sposob uzycia:
+
+    PackageQueueType queue = PackageQueueType::LIFO;
+
+    switch (queue) {
+        case PackageQueueType::FIFO:
+            //tu nizej jakas instukcja
+            std::cout << "stos" << std::endl;
+            break;
+        case PackageQueueType::LIFO:
+            //tu tez
+            std::cout << "kolejka" << std::endl;
+            break;
+    }
+}
