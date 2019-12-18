@@ -1,54 +1,36 @@
 #include "PackageQueue.h"
 
-PackageQueue::PackageQueue(QueueType queuetype)
-        :_queueType(queuetype)
-{
-    if (queuetype == QueueType::FIFO)
-    {
-        _popFunction = [this]()->Package
-        {
-            Package result = _deque.front();
-            _deque.pop_front();
-            return result;
-        };
-    }
-    else if (queuetype == QueueType::LIFO)
-    {
-        _popFunction = [this]()->Package
-        {
-            Package result = _deque.back();
-            _deque.pop_back();
-            return result;
-        };
+PackageQueue::PackageQueue(PackageQueueType QueueType): _QueueType(QueueType) {
+    switch (QueueType) {
+        case PackageQueueType::FIFO:
+            _pop = [this]() -> Package {
+                Package result = _list.front();
+                _list.pop_front();
+                return result;
+            };
+            break;
+        case PackageQueueType::LIFO:
+            _pop = [this]() -> Package {
+                Package result = _list.back();
+                _list.pop_back();
+                return result;
+            };
+            break;
     }
 }
 
-void PackageQueue::push(Package package)
-{
-    _deque.push_back(package);
+void PackageQueue::push(Package &&elem) {
+    _list.push_back(elem);
 }
 
-Package PackageQueue::pop()
-{
-    return _popFunction();
+bool PackageQueue::empty() const {
+    return _list.empty();
 }
 
-Package* PackageQueue::view()const
-{
-    Package * result = new Package[_deque.size()];
-    for (int i = 0; i < _deque.size(); i++)
-    {
-        result[i] = _deque[i];
-    }
-    return result;
+size_t PackageQueue::size() const {
+    return _list.size();
 }
 
-bool PackageQueue::empty() const
-{
-    return _deque.empty();
-}
-
-int PackageQueue::size() const
-{
-    return _deque.size();
+Package PackageQueue::pop() {
+    return _pop();
 }

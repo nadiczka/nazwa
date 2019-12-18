@@ -2,6 +2,7 @@
 #define SIMNET_IPACKAGESTOCKPILE_H
 
 #include "Typy.h"
+#include "Package.hpp"
 
 class IPackageDepot
 {
