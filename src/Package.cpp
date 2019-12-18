@@ -2,7 +2,7 @@
 // Created by igach on 18.12.2019.
 //
 
-#include "../include/package.hpp"
+#include "Package.hpp"
 
 std::set<ElementID> Package::assigned_IDs;
 std::set<ElementID> Package::freed_IDs;
