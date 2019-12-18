@@ -3,7 +3,7 @@ project(SimNet)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_compile_options(-Wall -Wextra -Wpedantic -pedantic-errors)
+add_compile_options(-Wall -Wextra -Werror -Wpedantic -pedantic-errors)
 
 include_directories(include)
 
