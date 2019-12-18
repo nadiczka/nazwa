@@ -3,5 +3,12 @@ project(NetSim)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(main.cpp)
+add_compile_options(-Wall -Wextra -Werror -Wpedantic -pedantic-errors)
+
+include_directories(include)
+
+set(SOURCE_FILES
+        src/package.cpp)
+
+add_executable(NetSim ${SOURCE_FILES} main.cpp)
 
