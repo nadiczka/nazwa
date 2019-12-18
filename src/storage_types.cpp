@@ -3,7 +3,7 @@
 PackageQueue::PackageQueue(PackageQueueType QueueType): _QueueType(QueueType) {}
 
 void PackageQueue::push(Package &&elem) {
-    _list.push_back(elem);
+    _list.emplace_back(std::move(elem));
 }
 
 bool PackageQueue::empty() const {
@@ -15,12 +15,10 @@ size_t PackageQueue::size() const {
 }
 
 Package PackageQueue::pop() {
-    switch (get_queue_type()) {
+    switch (_QueueType) {
         case PackageQueueType::FIFO:
             return std::move(_list.front());
-            break;
         case PackageQueueType::LIFO:
             return std::move(_list.back());
-            break;
     }
 }

@@ -10,6 +10,8 @@ public:
 
     Package(Package &&other);
 
+    Package(const Package&)= default;
+
     ~Package();
     Package &operator=(Package &&other);
     ElementID get_id();
@@ -18,5 +20,7 @@ private:
     static std::set<ElementID> assigned_IDs;
     static std::set<ElementID> freed_IDs;
 };
+
+
 
 #endif //PROJEKT_NIEGIT_PACKAGE_HPP
