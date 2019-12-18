@@ -18,7 +18,7 @@ enum class PackageQueueType {
 
 class IPackageStockpile {
 public:
-    virtual void push(package &&elem) = 0;
+    virtual void push(Package &&elem) = 0;
     virtual bool empty() const = 0;
     virtual size_t size() const = 0 ;
 
@@ -31,7 +31,7 @@ class IPackageQueue : public IPackageStockpile {
 
 public:
     virtual PackageQueueType get_queue_type() const = 0;
-    virtual package pop() = 0;
+    virtual Package pop() = 0;
 private:
 
 };
@@ -42,16 +42,15 @@ class PackageQueue : public IPackageQueue {
 public:
     PackageQueue(PackageQueueType);
 
-    void push(package &&elem) override;
+    void push(Package &&elem) override;
     bool empty() const override;
     size_t size() const override;
-    package pop() override;
+    Package pop() override;
     inline PackageQueueType get_queue_type() const override { return _QueueType; };
 
 private:
     PackageQueueType _QueueType;
-    std::list<package> _list;  //po co
-    std::function<package()> _pop;  // po co
+    std::list<Package> _list;
 
 };
 

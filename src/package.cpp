@@ -1,8 +1,9 @@
 #include "package.hpp"
 
-std::set<ElementID> package::assigned_IDs;
-std::set<ElementID> package::freed_IDs;
-package::package()
+std::set<ElementID> Package::assigned_IDs;
+std::set<ElementID> Package::freed_IDs;
+
+Package::Package()
 {
     if(!freed_IDs.empty()){
         id = *freed_IDs.begin();
@@ -17,13 +18,13 @@ package::package()
 assigned_IDs.insert(id);
 }
 
-package::package(package &&other)
+Package::Package(Package &&other)
 {
     id = other.id;
     other.id = -1;
 }
 
-package::~package()
+Package::~Package()
 {
     if(id<0)
     {
@@ -32,7 +33,7 @@ package::~package()
     }
 }
 
-package &package::operator=(package &&other)
+Package &Package::operator=(Package &&other)
 {
     assigned_IDs.erase(id);
     freed_IDs.insert(id);
@@ -41,7 +42,7 @@ package &package::operator=(package &&other)
     return *this;
 }
 
-ElementID package::get_id()
+ElementID Package::get_id()
 {
     return id;
 }

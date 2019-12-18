@@ -2,17 +2,16 @@
 #define PROJEKT_NIEGIT_PACKAGE_HPP
 
 #include <set>
+#include "types.hpp"
 
-using ElementID = int;
-
-class package {
+class Package {
 public:
-    package();
+    Package();
 
-    package(package &&other);
+    Package(Package &&other);
 
-    ~package();
-    package &operator=(package &&other);
+    ~Package();
+    Package &operator=(Package &&other);
     ElementID get_id();
 private:
     ElementID id;
