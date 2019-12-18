@@ -4,16 +4,16 @@ PackageQueue::PackageQueue(PackageQueueType QueueType): _QueueType(QueueType) {
     switch (QueueType) {
         case PackageQueueType::FIFO:
             _pop = [this]() -> Package {
-                Package result = _list.front();
+                Package first_elem = std::move(_list.front());
                 _list.pop_front();
-                return result;
+                return first_elem;
             };
             break;
         case PackageQueueType::LIFO:
             _pop = [this]() -> Package {
-                Package result = _list.back();
+                Package last_elem = std::move(_list.back());
                 _list.pop_back();
-                return result;
+                return last_elem;
             };
             break;
     }
