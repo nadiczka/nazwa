@@ -1,7 +1,3 @@
-//
-// Created by igach on 18.12.2019.
-//
-
 #ifndef PROJEKT_NIEGIT_PACKAGE_HPP
 #define PROJEKT_NIEGIT_PACKAGE_HPP
 
@@ -9,14 +5,14 @@
 
 using ElementID = int;
 
-class Package {
+class package {
 public:
-    Package();
+    package();
 
-    Package(Package &&other);
+    package(package &&other);
 
-    ~Package();
-    Package &operator=(Package &&other);
+    ~package();
+    package &operator=(package &&other);
     ElementID get_id();
 private:
     ElementID id;
