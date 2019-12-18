@@ -1,8 +1,15 @@
+#include <iostream>
+
 
 enum class PackageQueueType {
     FIFO, LIFO
 };
 
+
+class PackageQueue {
+public:
+    PackageQueue(PackageQueueType);
+};
 
 int main() {
 
