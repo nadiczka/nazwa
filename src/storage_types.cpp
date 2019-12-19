@@ -16,11 +16,17 @@ size_t PackageQueue::size() const {
 
 Package PackageQueue::pop(){
     switch(_QueueType){
-        case PackageQueueType::FIFO:
-            return std::move(_list.front());
-        case PackageQueueType::LIFO:
-            return std::move(_list.back());
+        case PackageQueueType::FIFO: {
+            Package first_elem = std::move(_list.front());
+            _list.pop_front();
+            return first_elem;
         }
+        case PackageQueueType::LIFO: {
+            Package last_elem = std::move(_list.back());
+            _list.pop_back();
+            return last_elem;
+        }
+    }
     return Package();
 }
 
