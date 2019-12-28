@@ -3,5 +3,4 @@
 
 using ElementID = int;
 
-
 #endif //SIMNET_TYPES_HPP
