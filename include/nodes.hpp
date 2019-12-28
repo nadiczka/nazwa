@@ -12,7 +12,7 @@ double ProbabilityGenerator();
 
 class ReceiverPreferences {
 public:
-    ReceiverPreferences(double &ProbabilityGenerator());
+    ReceiverPreferences(std::function<double()> rand_function = ProbabilityGenerator());
     IPackageReceiver* choose_receiver();
 private:
     std::map<Receiver*,double> _preferences;
