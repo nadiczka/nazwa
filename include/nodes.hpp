@@ -6,16 +6,17 @@ enum class Nodes {
     RAMP, STOREHOUSE, WORKER
 };
 
-union Receiver {Worker worker; Storehouse storehouse;};
-
 double ProbabilityGenerator();
 
 class ReceiverPreferences {
 public:
     ReceiverPreferences(std::function<double()> rand_function = ProbabilityGenerator());
     IPackageReceiver* choose_receiver();
+    void add_receiver(IPackageReceiver* receiver);
+    void remove_receiver(IPackageReceiver* receiver);
 private:
-    std::map<Receiver*,double> _preferences;
+    std::map<IPackageReceiver*,double> _preferences;
+    double temporary_probability;
 };
 
 #endif //SIMNET_NODES_HPP
