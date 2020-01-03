@@ -3,12 +3,15 @@
 #include <ctime>
 #include <functional>
 
-double ProbabilityGenerator() {
-    return rand() % 1 + 0;
+std::random_device rd;
+std::mt19937 rng(rd());
+
+double probability_generator() {
+    return std::generate_canonical<double, 10>(rng);
 }
 
-ReceiverPreferences::ReceiverPreferences(std::function<double()> rand_function = ProbabilityGenerator()){
-    temporary_probability = rand_function;
+ReceiverPreferences::ReceiverPreferences(ProbabilityGenerator() = probability_generator()){
+    temporary_probability = ProbabilityGenerator();
 }
 
 ReceiverPreferences::add_receiver(IPackageReceiver* receiver){

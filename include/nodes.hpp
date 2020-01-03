@@ -9,7 +9,7 @@ enum class Nodes {
     RAMP, STOREHOUSE, WORKER
 };
 
-double ProbabilityGenerator();
+double probability_generator();
 
 class ReceiverPreferences {
 public:
@@ -25,6 +25,9 @@ private:
 class PackageSender {
 public:
 //IPackageReceiver(ReceiverPreferences receiver_preferences);       <-- o co cho?
+//no to miał byc konstruktor, zeby uzupelnic pole receiver_preferences tylko zla nazwa klasy
+//wstawiam nowy:
+    PackageSender(ReceiverPreferences receiver_preferences);
     void send_package();
     std::optional<Package> get_sending_buffer();
 protected:
