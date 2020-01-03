@@ -1,4 +1,7 @@
 #include "nodes.hpp"
+#include <cstdlib>
+#include <ctime>
+#include <functional>
 
 double ProbabilityGenerator() {
     return rand() % 1 + 0;
@@ -31,10 +34,32 @@ ReceiverPreferences::choose_receiver() {
     }
 }
 
-IPackageReceiver::IPackageReceiver(ReceiverPreferences receiver_preferences){
-    receiver_preferences_ = receiver_preferences;
+//nizej Nadii
+void PackageSender::sendPackage()
+{
+
 }
 
-IPackageReceiver::send_package{
-    //I DONT KNOW... YET
-};
+
+// to nizej nie wiem czy ok
+Package* PackageSender::get_sending_buffer()const
+{
+    Package* result = new Package[push_package.size()];
+    for (int i = 0; i < push_package.size(); i++)
+    {
+        result[i] = push_package[i];
+    }
+    return result;
+}
+
+Ramp::Ramp(ElementID id, TimeOffset di): id(id), delivery_interval(di)
+{}
+
+void Ramp::deliver_goods(Time t)
+{
+    if (t == delivery_interval)
+    {
+        Package package;
+        sendingBuffer.push_back(package);
+    }
+}
