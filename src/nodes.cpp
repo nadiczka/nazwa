@@ -2,29 +2,33 @@
 #include <cstdlib>
 #include <ctime>
 #include <functional>
+#include <random>
+#include <map>
 
 std::random_device rd;
 std::mt19937 rng(rd());
-
-double probability_generator() {
+/*
+ProbabilityGenerator pg {
     return std::generate_canonical<double, 10>(rng);
 }
 
-ReceiverPreferences::ReceiverPreferences(ProbabilityGenerator() = probability_generator()){
-    temporary_probability = ProbabilityGenerator();
+ReceiverPreferences::ReceiverPreferences(ProbabilityGenerator pg){
+    temporary_probability = pg;
 }
+ */ // <------------------ to jest zle mocno
 
-ReceiverPreferences::add_receiver(IPackageReceiver* receiver){
+/*
+void ReceiverPreferences::add_receiver(IPackageReceiver* receiver){
     preferences_.insert(receiver, temporary_probability);
     temporary_probability = 0;
-}
+}*/  // <-------------------- a tu mu cos w insercie nie pasuje ale nie mam pojecia co
 
-ReceiverPreferences::remove_receiver(IPackageReceiver* receiver) {
+void ReceiverPreferences::remove_receiver(IPackageReceiver* receiver) {
     preferences_.erase(receiver);
 }
 
-ReceiverPreferences::choose_receiver() {
-    maximum = 0;
+IPackageReceiver* ReceiverPreferences::choose_receiver() {
+    int maximum = 0;
     for (auto& i : preferences_.items()){
         if (i->second > maximum) {
             maximum = i->second

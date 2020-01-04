@@ -15,7 +15,7 @@ double probability_generator();
 
 class ReceiverPreferences {
 public:
-    ReceiverPreferences(ProbabilityGenerator() = probability_generator());
+    ReceiverPreferences(std::function<double()> rand_function = ProbabilityGenerator());
     IPackageReceiver* choose_receiver();
     void add_receiver(IPackageReceiver* receiver);
     void remove_receiver(IPackageReceiver* receiver);
