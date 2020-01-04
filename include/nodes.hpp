@@ -3,39 +3,15 @@
 #include <map>
 #include "types.hpp"
 #include "package.hpp"
+#include "storage_types.hpp"
 #include <bits/unique_ptr.h>
 #include <memory>
+#include <map>
+#include <functional>
 
 
 enum class Nodes {
-    RAMP, STOREHOUSE, WORKER
-};
-
-double probability_generator();
-
-class ReceiverPreferences {
-public:
-    ReceiverPreferences(std::function<double()> rand_function = ProbabilityGenerator());
-    IPackageReceiver* choose_receiver();
-    void add_receiver(IPackageReceiver* receiver);
-    void remove_receiver(IPackageReceiver* receiver);
-private:
-    std::map<IPackageReceiver*,double> preferences_;
-    double temporary_probability;
-};
-
-class PackageSender {
-public:
-//IPackageReceiver(ReceiverPreferences receiver_preferences);       <-- o co cho?
-//no to miał byc konstruktor, zeby uzupelnic pole receiver_preferences tylko zla nazwa klasy
-//wstawiam nowy:
-    PackageSender(ReceiverPreferences receiver_preferences);
-    void send_package();
-    std::optional<Package> get_sending_buffer();
-protected:
-    void push_package(Package&& package);
-private:
-    ReceiverPreferences receiver_preferences_;
+    RAMP, WORKER
 };
 
 class IPackageReceiver {
@@ -45,16 +21,6 @@ public:
     virtual ElementID get_id()  = 0;
 };
 
-class Ramp: public PackageSender {
-public:
-    void Ramp(ElementID id, TimeOffset di);
-    void deliver_goods(Time t);
-    inline TimeOffset get_delivery_interval() { return delivery_interval; }
-    inline ElementID get_id() const { return id; }
-private:
-    ElementID id;
-    TimeOffset delivery_interval;
-};
 
 class Storehouse : public IPackageReceiver {
 public:
@@ -66,6 +32,41 @@ private:
     ElementID id;
     std::unique_ptr<IPackageStockpile> d;
 };
+
+
+class ReceiverPreferences {
+public:
+    ReceiverPreferences(ProbabilityGenerator pg);
+    IPackageReceiver* choose_receiver();
+    void add_receiver(IPackageReceiver* receiver);
+    void remove_receiver(IPackageReceiver* receiver);
+private:
+    std::map<IPackageReceiver*,double> preferences_;
+    ProbabilityGenerator temporary_probability;
+};
+
+class PackageSender {
+public:
+    void send_package();
+    std::optional<Package> get_sending_buffer();
+    ReceiverPreferences receiver_preferences_;
+protected:
+    void push_package(Package&& package);
+    std::vector<Package> sending_buffer;
+};
+
+
+class Ramp: public PackageSender {
+public:
+    Ramp(ElementID id, TimeOffset di);
+    void deliver_goods(Time t);
+    inline TimeOffset get_delivery_interval() { return delivery_interval; }
+    inline ElementID get_id() const { return id; }
+private:
+    ElementID id;
+    TimeOffset delivery_interval;
+};
+
 
 class Worker: public IPackageQueue, public IPackageReceiver{
 public:
