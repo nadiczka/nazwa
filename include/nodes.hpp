@@ -33,7 +33,6 @@ private:
     std::unique_ptr<IPackageStockpile> d;
 };
 
-double probability_generator();
 
 class ReceiverPreferences {
 public:
@@ -43,23 +42,23 @@ public:
     void remove_receiver(IPackageReceiver* receiver);
 private:
     std::map<IPackageReceiver*,double> preferences_;
-    double temporary_probability;
+    ProbabilityGenerator temporary_probability;
 };
 
 class PackageSender {
 public:
     void send_package();
     std::optional<Package> get_sending_buffer();
+    ReceiverPreferences receiver_preferences_;
 protected:
     void push_package(Package&& package);
-private:
-    ReceiverPreferences receiver_preferences_;
+    std::vector<Package> sending_buffer;
 };
 
 
 class Ramp: public PackageSender {
 public:
-    void Ramp(ElementID id, TimeOffset di);
+    Ramp(ElementID id, TimeOffset di);
     void deliver_goods(Time t);
     inline TimeOffset get_delivery_interval() { return delivery_interval; }
     inline ElementID get_id() const { return id; }
@@ -67,7 +66,6 @@ private:
     ElementID id;
     TimeOffset delivery_interval;
 };
-
 
 
 class Worker: public IPackageQueue, public IPackageReceiver{

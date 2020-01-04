@@ -7,21 +7,15 @@
 
 std::random_device rd;
 std::mt19937 rng(rd());
-/*
-ProbabilityGenerator pg {
-    return std::generate_canonical<double, 10>(rng);
-}
 
-ReceiverPreferences::ReceiverPreferences(ProbabilityGenerator pg){
+ReceiverPreferences::ReceiverPreferences(ProbabilityGenerator pg) {
     temporary_probability = pg;
 }
- */ // <------------------ to jest zle mocno
 
-/*
 void ReceiverPreferences::add_receiver(IPackageReceiver* receiver){
     preferences_.insert(receiver, temporary_probability);
     temporary_probability = 0;
-}*/  // <-------------------- a tu mu cos w insercie nie pasuje ale nie mam pojecia co
+}
 
 void ReceiverPreferences::remove_receiver(IPackageReceiver* receiver) {
     preferences_.erase(receiver);
@@ -41,22 +35,25 @@ IPackageReceiver* ReceiverPreferences::choose_receiver() {
     }
 }
 
-//nizej Nadii
-void PackageSender::sendPackage()
+// Packagesender zle
+void PackageSender::send_package()
+{
+    std::srand(std::time(nullptr));
+    double random = rand() / RAND_MAX;
+    auto receiver = receiver_preferences_(random);
+    Package package = sending_buffer.back();
+    sending_buffer.pop_back();
+
+}
+
+Package* PackageSender::get_sending_buffer()const
 {
 
 }
 
-
-// to nizej nie wiem czy ok
-Package* PackageSender::get_sending_buffer()const
+void push_package(Package&& package)
 {
-    Package* result = new Package[push_package.size()];
-    for (int i = 0; i < push_package.size(); i++)
-    {
-        result[i] = push_package[i];
-    }
-    return result;
+
 }
 
 Ramp::Ramp(ElementID id, TimeOffset di): id(id), delivery_interval(di)
@@ -67,7 +64,7 @@ void Ramp::deliver_goods(Time t)
     if (t == delivery_interval)
     {
         Package package;
-        sendingBuffer.push_back(package);
+        sending_buffer.push_back(package);
     }
 }
 
