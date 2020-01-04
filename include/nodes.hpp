@@ -3,19 +3,41 @@
 #include <map>
 #include "types.hpp"
 #include "package.hpp"
+#include "storage_types.hpp"
 #include <bits/unique_ptr.h>
 #include <memory>
+#include <map>
+#include <functional>
 
 
 enum class Nodes {
-    RAMP, STOREHOUSE, WORKER
+    RAMP, WORKER
+};
+
+class IPackageReceiver {
+public:
+    virtual void receive_package(Package) = 0;
+
+    virtual ElementID get_id()  = 0;
+};
+
+
+class Storehouse : public IPackageReceiver {
+public:
+    Storehouse(int id, std::unique_ptr<IPackageStockpile> d);
+    void receive_package(Package aPackage) override;
+    ElementID get_id() override;
+
+private:
+    ElementID id;
+    std::unique_ptr<IPackageStockpile> d;
 };
 
 double probability_generator();
 
 class ReceiverPreferences {
 public:
-    ReceiverPreferences(std::function<double()> rand_function = ProbabilityGenerator());
+    ReceiverPreferences(ProbabilityGenerator pg);
     IPackageReceiver* choose_receiver();
     void add_receiver(IPackageReceiver* receiver);
     void remove_receiver(IPackageReceiver* receiver);
@@ -26,10 +48,6 @@ private:
 
 class PackageSender {
 public:
-//IPackageReceiver(ReceiverPreferences receiver_preferences);       <-- o co cho?
-//no to miał byc konstruktor, zeby uzupelnic pole receiver_preferences tylko zla nazwa klasy
-//wstawiam nowy:
-    PackageSender(ReceiverPreferences receiver_preferences);
     void send_package();
     std::optional<Package> get_sending_buffer();
 protected:
@@ -38,12 +56,6 @@ private:
     ReceiverPreferences receiver_preferences_;
 };
 
-class IPackageReceiver {
-public:
-    virtual void receive_package(Package) = 0;
-
-    virtual ElementID get_id()  = 0;
-};
 
 class Ramp: public PackageSender {
 public:
@@ -56,16 +68,7 @@ private:
     TimeOffset delivery_interval;
 };
 
-class Storehouse : public IPackageReceiver {
-public:
-    Storehouse(int id, std::unique_ptr<IPackageStockpile> d);
-    void receive_package(Package aPackage) override;
-    ElementID get_id() override;
 
-private:
-    ElementID id;
-    std::unique_ptr<IPackageStockpile> d;
-};
 
 class Worker: public IPackageQueue, public IPackageReceiver{
 public:
