@@ -72,24 +72,28 @@ void Storehouse::receive_package(Package aPackage) {
 
 }
 
+int IPackageReceiver::get_type() {
+    return this->type;
+}
+
 ElementID Storehouse::get_id() {
     return this->id;
 }
 
 Storehouse::Storehouse(int id, std::unique_ptr<IPackageStockpile> d) {
-
+    this->type = 2;
 }
 
 void Worker::receive_package(Package aPackage) {
 
 }
 
-int Worker::get_id() {
-    return 0;
+ElementID Worker::get_id() {
+    return this->id;
 }
 
 Worker::Worker(ElementID id, TimeOffset pd, std::unique_ptr<IPackageQueue> q) {
-
+    this->type = 1;
 }
 
 void Worker::do_work(Time t) {

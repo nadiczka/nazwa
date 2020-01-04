@@ -11,14 +11,19 @@
 
 
 enum class Nodes {
-    RAMP, WORKER
+    // żeby jeszcze StoreHouse obejmowało
+    RAMP = 0,
+    WORKER = 1,
+    STOREHOUSE = 2,
 };
 
 class IPackageReceiver {
 public:
+    // get_type():
+    int get_type(); //nie ma w uml tego
+    virtual ElementID get_id() = 0;
     virtual void receive_package(Package) = 0;
 
-    virtual ElementID get_id()  = 0;
 };
 
 
@@ -30,6 +35,7 @@ public:
 
 private:
     ElementID id;
+    int type;
     std::unique_ptr<IPackageStockpile> d;
 };
 
@@ -71,8 +77,14 @@ private:
 class Worker: public IPackageQueue, public IPackageReceiver{
 public:
     Worker(ElementID id, TimeOffset pd, std::unique_ptr<IPackageQueue> q);
+
+    // implementation for package receiver interface
     void receive_package(Package aPackage) override;
+    // get_type():
+    int get_type() override;
     int get_id() override;
+
+    // specific to the worker
     void do_work(Time t);
     TimeOffset get_processing_duration();
     Time get_package_processing_start_time();
