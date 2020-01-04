@@ -3,6 +3,8 @@
 #include <map>
 #include "types.hpp"
 #include "package.hpp"
+#include <bits/unique_ptr.h>
+#include <memory>
 
 
 enum class Nodes {
@@ -36,6 +38,13 @@ private:
     ReceiverPreferences receiver_preferences_;
 };
 
+class IPackageReceiver {
+public:
+    virtual void receive_package(Package) = 0;
+
+    virtual ElementID get_id()  = 0;
+};
+
 class Ramp: public PackageSender {
 public:
     void Ramp(ElementID id, TimeOffset di);
@@ -45,6 +54,32 @@ public:
 private:
     ElementID id;
     TimeOffset delivery_interval;
+};
+
+class Storehouse : public IPackageReceiver {
+public:
+    Storehouse(int id, std::unique_ptr<IPackageStockpile> d);
+    void receive_package(Package aPackage) override;
+    ElementID get_id() override;
+
+private:
+    ElementID id;
+    std::unique_ptr<IPackageStockpile> d;
+};
+
+class Worker: public IPackageQueue, public IPackageReceiver{
+public:
+    Worker(ElementID id, TimeOffset pd, std::unique_ptr<IPackageQueue> q);
+    void receive_package(Package aPackage) override;
+    int get_id() override;
+    void do_work(Time t);
+    TimeOffset get_processing_duration();
+    Time get_package_processing_start_time();
+
+private:
+    ElementID id;
+    TimeOffset pd;
+    std::unique_ptr<IPackageQueue> q;
 };
 
 #endif //SIMNET_NODES_HPP
