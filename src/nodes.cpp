@@ -41,12 +41,14 @@ void ReceiverPreferences::remove_receiver(IPackageReceiver* receiver) {
 IPackageReceiver* ReceiverPreferences::choose_receiver() {
     double distributio = rand_func();
     double sum_probabilities = 0;
-    for (auto& [key, value]: preferences_) {
+    for (auto&[key, value]: preferences_) {
         sum_probabilities += value;
         if (sum_probabilities >= distributio) {
             return key;
         }
     }
+
+    return preferences_.begin()->first;
 }
 
 //--------------------------------------------PackageSender------------------------------------------------------
