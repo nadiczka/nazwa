@@ -11,7 +11,6 @@
 
 
 enum class Nodes {
-    // żeby jeszcze StoreHouse obejmowało
     RAMP = 0,
     WORKER = 1,
     STOREHOUSE = 2,
@@ -19,11 +18,9 @@ enum class Nodes {
 
 class IPackageReceiver {
 public:
-    // get_type():
     int get_type(); //nie ma w uml tego
     virtual ElementID get_id() = 0;
     virtual void receive_package(Package) = 0;
-
 };
 
 
@@ -59,13 +56,15 @@ private:
 
 class PackageSender {
 public:
+    PackageSender(ReceiverPreferences receiver_preferences);
     void send_package();
     std::optional<Package> get_sending_buffer();
     ReceiverPreferences receiver_preferences_;
 protected:
-    void push_package(Package&& package);
-    std::vector<Package> sending_buffer;
+    void push_package(Package&& package); // wrzuca do bufora
+    std::optional<Package> bufer ;
 };
+
 
 
 class Ramp: public PackageSender {

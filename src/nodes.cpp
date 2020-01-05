@@ -54,15 +54,14 @@ IPackageReceiver* ReceiverPreferences::choose_receiver() {
     }
 }
 
-// Packagesender zle
-void PackageSender::send_package()
-{
-    std::srand(std::time(nullptr));
-    double random = rand() / RAND_MAX;
-    auto receiver = receiver_preferences_(random);
-    Package package = sending_buffer.back();
-    sending_buffer.pop_back();
+PackageSender::PackageSender(ReceiverPreferences receiver_preferences) {
+    receiver_preferences_ = receiver_preferences;
+    bufer = std::nullopt;
+}
 
+void PackageSender::push_package(Package&& package)
+{
+    bufer = package;
 }
 
 Package* PackageSender::get_sending_buffer()const
@@ -70,10 +69,19 @@ Package* PackageSender::get_sending_buffer()const
 
 }
 
-void push_package(Package&& package)
+void PackageSender::send_package()
 {
-
+    if (bufer) {
+        auto receiver = receiver_preferences_.choose_receiver();
+        Package package = get_sending_buffer();
+        receiver->receivePackage(package);
+    }
 }
+
+
+
+
+
 
 Ramp::Ramp(ElementID id, TimeOffset di): id(id), delivery_interval(di)
 {}
