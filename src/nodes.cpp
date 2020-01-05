@@ -8,29 +8,48 @@
 std::random_device rd;
 std::mt19937 rng(rd());
 
+double pg() {
+    return std::generate_canonical<double, 10>(rng);
+}
+
+
 ReceiverPreferences::ReceiverPreferences(ProbabilityGenerator pg) {
-    temporary_probability = pg;
+    ProbabilityGenerator rand_func = pg;
 }
 
 void ReceiverPreferences::add_receiver(IPackageReceiver* receiver){
-    preferences_.insert(receiver, temporary_probability);
-    temporary_probability = 0;
+    if (preferences_.empty()){
+        preferences_.insert(std::make_pair(receiver, 1));
+    }
+    double new_probability = rand_func();
+    preferences_.insert(std::make_pair(receiver, new_probability));
+    double sum_probabilities = 1 + new_probability;
+    for (auto& [key, value]: preferences_) {
+        value = value/sum_probabilities;
+    }
 }
 
 void ReceiverPreferences::remove_receiver(IPackageReceiver* receiver) {
     preferences_.erase(receiver);
+    double sum_probabilities = 0;
+    for (auto& [key, value]: preferences_) {
+        sum_probabilities += value;
+    }
+    for (auto& [key, value]: preferences_) {
+        value = value/sum_probabilities;
+    }
 }
 
 IPackageReceiver* ReceiverPreferences::choose_receiver() {
     int maximum = 0;
-    for (auto& i : preferences_.items()){
-        if (i->second > maximum) {
-            maximum = i->second
+    for (auto& [key, value]: preferences_) {
+        if (value > maximum) {
+            maximum = value;
         }
     }
-    for (auto& i : preferences_.items()){
-        if (i->second = maximum) {
-            return i->first;
+    for (auto& [key, value]: preferences_) {
+        if (value = maximum) {
+            return key;
         }
     }
 }

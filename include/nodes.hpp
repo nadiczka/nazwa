@@ -46,6 +46,7 @@ public:
     IPackageReceiver* choose_receiver();
     void add_receiver(IPackageReceiver* receiver);
     void remove_receiver(IPackageReceiver* receiver);
+    double rand_func();
     std::map<IPackageReceiver*,double>::const_iterator cbegin() const { return preferences_.cbegin(); }
     std::map<IPackageReceiver*,double>::const_iterator cend() const { return preferences_.cend(); }
     std::map<IPackageReceiver*,double>::iterator begin() { return preferences_.begin(); }
@@ -54,7 +55,6 @@ public:
     std::map<IPackageReceiver*,double>::const_iterator end() const { return preferences_.cend(); }
 private:
     std::map<IPackageReceiver*,double> preferences_;
-    ProbabilityGenerator temporary_probability;
 };
 
 class PackageSender {
