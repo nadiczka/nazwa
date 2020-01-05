@@ -9,31 +9,15 @@
 #include <map>
 #include <functional>
 
-
 enum class Nodes {
-    RAMP = 0,
-    WORKER = 1,
-    STOREHOUSE = 2,
+    WORKER, STORAGEHOUSE
 };
+
 
 class IPackageReceiver {
 public:
-    int get_type(); //nie ma w uml tego
     virtual ElementID get_id() = 0;
     virtual void receive_package(Package) = 0;
-};
-
-
-class Storehouse : public IPackageReceiver {
-public:
-    Storehouse(int id, std::unique_ptr<IPackageStockpile> d);
-    void receive_package(Package aPackage) override;
-    ElementID get_id() override;
-
-private:
-    ElementID id;
-    int type;
-    std::unique_ptr<IPackageStockpile> d;
 };
 
 
@@ -62,15 +46,12 @@ public:
     ReceiverPreferences receiver_preferences_;
 protected:
     void push_package(Package&& package);
-private:
     std::optional<Package> bufer ;
 };
 
-
-
 class Ramp: public PackageSender {
 public:
-    Ramp(ElementID id, TimeOffset di);
+    Ramp(ElementID id_, TimeOffset di, ProbabilityGenerator PGen);
     void deliver_goods(Time t);
     inline TimeOffset get_delivery_interval() { return delivery_interval; }
     inline ElementID get_id() const { return id; }
@@ -80,25 +61,34 @@ private:
 };
 
 
-class Worker: public IPackageQueue, public IPackageReceiver{
+
+class Storehouse : public IPackageReceiver {
 public:
-    Worker(ElementID id, TimeOffset pd, std::unique_ptr<IPackageQueue> q);
-
-    // implementation for package receiver interface
+    Storehouse(int id, std::unique_ptr<IPackageStockpile> d);
     void receive_package(Package aPackage) override;
-    // get_type():
-    int get_type() override;
-    int get_id() override;
-
-    // specific to the worker
-    void do_work(Time t);
-    TimeOffset get_processing_duration();
-    Time get_package_processing_start_time();
+    ElementID get_id() override;
 
 private:
     ElementID id;
-    TimeOffset pd;
-    std::unique_ptr<IPackageQueue> q;
+    int type;
+    std::unique_ptr<IPackageStockpile> d;
+};
+
+
+class Worker: public PackageSender, public IPackageReceiver {
+public:
+    Worker(ElementID id, TimeOffset pd, std::unique_ptr<PackageQueue>, ProbabilityGenerator PGen);
+    void do_work(Time timeWorker);
+    TimeOffset get_processing_duration() const;
+    Time get_package_processing_start_time() const;
+    ElementID get_id() override;
+    void receive_package(Package aPackage) override;
+private:
+    TimeOffset processing_durationWorker;
+    ElementID idWorker;
+    std::unique_ptr <PackageQueue> ptrWorker;
+    std::optional <Package> bufor;
+    Time timeWorker;
 };
 
 #endif //SIMNET_NODES_HPP

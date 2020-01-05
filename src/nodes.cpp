@@ -8,7 +8,6 @@
 
 //--------------------------------------------ReceiverPreferences------------------------------------------------------
 
-
 std::random_device rd;
 std::mt19937 rng(rd());
 
@@ -85,21 +84,21 @@ void PackageSender::send_package()
 //--------------------------------------------Ramp------------------------------------------------------
 
 
-
-
-Ramp::Ramp(ElementID id, TimeOffset di): id(id), delivery_interval(di)
-{}
+Ramp::Ramp(ElementID id_, TimeOffset di, ProbabilityGenerator PGen)
+{
+    id = id_;
+    delivery_interval = di;
+    receiver_preferences_ = PGen;
+}
 
 void Ramp::deliver_goods(Time t)
 {
     if (t == delivery_interval)
     {
         Package package;
-        sending_buffer.push_back(package);
+        push_package(package);
     }
 }
-
-
 
 //--------------------------------------------Storehouse------------------------------------------------------
 
@@ -113,33 +112,43 @@ ElementID Storehouse::get_id() {
 }
 
 Storehouse::Storehouse(int id, std::unique_ptr<IPackageStockpile> d) {
-    this->type = 2;
+
 }
 
 
 //--------------------------------------------Worker------------------------------------------------------
 
+Worker::Worker(ElementID id, TimeOffset pd, std::unique_ptr<PackageQueue> ptr, ProbabilityGenerator PGen){
+    idWorker = id;
+    processing_durationWorker = pd;
+    ptrWorker = std::move(ptr);
+    receiver_preferences_ = PGen;
+}
 
-void Worker::receive_package(Package aPackage) {
+void Worker::do_work(Time t){
+    if (t == 0)
+    {
+        if(bufor)
+        {
+            push_package(std::move(*bufor));
+            bufor.reset();
+        }
+        bufor.emplace(ptrWorker->pop());
+    }
+}
 
+TimeOffset Worker::get_processing_duration() const {
+    return processing_durationWorker;
+}
+
+Time Worker::get_package_processing_start_time() const {
+    return timeWorker;
 }
 
 ElementID Worker::get_id() {
-    return this->id;
+    return idWorker;
 }
 
-Worker::Worker(ElementID id, TimeOffset pd, std::unique_ptr<IPackageQueue> q) {
-    this->type = 1;
-}
-
-void Worker::do_work(Time t) {
-
-}
-
-TimeOffset Worker::get_processing_duration() {
-    return 0;
-}
-
-Time Worker::get_package_processing_start_time() {
-    return 0;
+void Worker::receive_package(Package aPackage) {
+    ptrWorker->push(aPackage);
 }
