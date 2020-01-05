@@ -27,7 +27,6 @@ public:
     IPackageReceiver* choose_receiver();
     void add_receiver(IPackageReceiver* receiver);
     void remove_receiver(IPackageReceiver* receiver);
-    double rand_func();
     std::map<IPackageReceiver*,double>::const_iterator cbegin() const { return preferences_.cbegin(); }
     std::map<IPackageReceiver*,double>::const_iterator cend() const { return preferences_.cend(); }
     std::map<IPackageReceiver*,double>::iterator begin() { return preferences_.begin(); }
@@ -36,11 +35,12 @@ public:
     std::map<IPackageReceiver*,double>::const_iterator end() const { return preferences_.cend(); }
 private:
     std::map<IPackageReceiver*,double> preferences_;
+    ProbabilityGenerator rand_func;
 };
 
 class PackageSender {
 public:
-    PackageSender(ReceiverPreferences receiver_preferences(random_function()));
+    PackageSender(ProbabilityGenerator PGen);
     void send_package();
     std::optional<Package> get_sending_buffer();
     ReceiverPreferences receiver_preferences_;
@@ -60,24 +60,21 @@ private:
     TimeOffset delivery_interval;
 };
 
-
-
 class Storehouse : public IPackageReceiver {
 public:
-    Storehouse(int id, std::unique_ptr<IPackageStockpile> d);
+    Storehouse(ElementID );
     void receive_package(Package aPackage) override;
-    ElementID get_id() override;
-
+    inline ElementID get_id() override { return id; }
 private:
     ElementID id;
-    int type;
-    std::unique_ptr<IPackageStockpile> d;
+    std::unique_ptr<IPackageStockpile> stockpile;
 };
+
 
 
 class Worker: public PackageSender, public IPackageReceiver {
 public:
-    Worker(ElementID id, TimeOffset pd, std::unique_ptr<PackageQueue>, ProbabilityGenerator PGen);
+    Worker(ElementID id, TimeOffset pd, std::unique_ptr<PackageQueue> ptr, ProbabilityGenerator PGen);
     void do_work(Time timeWorker);
     TimeOffset get_processing_duration() const;
     Time get_package_processing_start_time() const;

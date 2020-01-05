@@ -17,16 +17,15 @@ double pg() {
 
 
 ReceiverPreferences::ReceiverPreferences(ProbabilityGenerator random_function) {
-    ProbabilityGenerator rand_func = random_function;
+    rand_func = random_function;
 }
 
 void ReceiverPreferences::add_receiver(IPackageReceiver* receiver){
     if (preferences_.empty()){
         preferences_.insert(std::make_pair(receiver, 1));
     }
-    double new_probability = rand_func();
-    preferences_.insert(std::make_pair(receiver, new_probability));
-    double sum_probabilities = 1 + new_probability;
+    preferences_.insert(std::make_pair(receiver, rand_func));
+    double sum_probabilities = 1 + rand_func;
     for (auto& [key, value]: preferences_) {
         value = value/sum_probabilities;
     }
@@ -57,8 +56,8 @@ IPackageReceiver* ReceiverPreferences::choose_receiver() {
 //--------------------------------------------PackageSender------------------------------------------------------
 
 
-PackageSender::PackageSender(ReceiverPreferences receiver_preferences(random_function())) {
-    receiver_preferences_ = receiver_preferences;
+PackageSender::PackageSender(ProbabilityGenerator PGen) {
+    receiver_preferences_(PGen);
     bufer = std::nullopt;
 }
 
@@ -86,9 +85,9 @@ void PackageSender::send_package()
 
 Ramp::Ramp(ElementID id_, TimeOffset di, ProbabilityGenerator PGen)
 {
+    PackageSender(PGen);
     id = id_;
     delivery_interval = di;
-    receiver_preferences_ = PGen;
 }
 
 void Ramp::deliver_goods(Time t)
@@ -100,30 +99,16 @@ void Ramp::deliver_goods(Time t)
     }
 }
 
-//--------------------------------------------Storehouse------------------------------------------------------
-
-
-void Storehouse::receive_package(Package aPackage) {
-
-}
-
-ElementID Storehouse::get_id() {
-    return this->id;
-}
-
-Storehouse::Storehouse(int id, std::unique_ptr<IPackageStockpile> d) {
-
-}
-
 
 //--------------------------------------------Worker------------------------------------------------------
 
 Worker::Worker(ElementID id, TimeOffset pd, std::unique_ptr<PackageQueue> ptr, ProbabilityGenerator PGen){
+    PackageSender(PGen);
     idWorker = id;
     processing_durationWorker = pd;
     ptrWorker = std::move(ptr);
-    receiver_preferences_ = PGen;
 }
+
 
 void Worker::do_work(Time t){
     if (t == 0)
@@ -152,3 +137,15 @@ ElementID Worker::get_id() {
 void Worker::receive_package(Package aPackage) {
     ptrWorker->push(aPackage);
 }
+
+
+//--------------------------------------------Storehouse------------------------------------------------------
+Storehouse::Storehouse(ElementID ID) : id(ID)
+{
+    stockpile = std::make_unique<PackageQueue>();
+}
+
+void Storehouse::receive_package(Package aPackage) {
+    stockpile->push(aPackage);
+}
+
