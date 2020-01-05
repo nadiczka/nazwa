@@ -61,7 +61,8 @@ public:
     std::optional<Package> get_sending_buffer();
     ReceiverPreferences receiver_preferences_;
 protected:
-    void push_package(Package&& package); // wrzuca do bufora
+    void push_package(Package&& package);
+private:
     std::optional<Package> bufer ;
 };
 

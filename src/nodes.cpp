@@ -5,6 +5,10 @@
 #include <random>
 #include <map>
 
+
+//--------------------------------------------ReceiverPreferences------------------------------------------------------
+
+
 std::random_device rd;
 std::mt19937 rng(rd());
 
@@ -40,6 +44,8 @@ void ReceiverPreferences::remove_receiver(IPackageReceiver* receiver) {
     }
 }
 
+
+
 IPackageReceiver* ReceiverPreferences::choose_receiver() {
     int maximum = 0;
     for (auto& [key, value]: preferences_) {
@@ -54,6 +60,9 @@ IPackageReceiver* ReceiverPreferences::choose_receiver() {
     }
 }
 
+//--------------------------------------------PackageSender------------------------------------------------------
+
+
 PackageSender::PackageSender(ReceiverPreferences receiver_preferences) {
     receiver_preferences_ = receiver_preferences;
     bufer = std::nullopt;
@@ -61,24 +70,24 @@ PackageSender::PackageSender(ReceiverPreferences receiver_preferences) {
 
 void PackageSender::push_package(Package&& package)
 {
-    bufer = package;
+    bufer.emplace(std::move(package));
 }
-
-Package* PackageSender::get_sending_buffer()const
+std::optional<Package> PackageSender::get_sending_buffer()
 {
-
+    return std::move(bufer);
 }
 
 void PackageSender::send_package()
 {
     if (bufer) {
         auto receiver = receiver_preferences_.choose_receiver();
-        Package package = get_sending_buffer();
-        receiver->receivePackage(package);
+        Package package = std::move(*bufer);
+        receiver->receive_package(package);
     }
 }
 
 
+//--------------------------------------------Ramp------------------------------------------------------
 
 
 
@@ -95,12 +104,13 @@ void Ramp::deliver_goods(Time t)
     }
 }
 
+
+
+//--------------------------------------------Storehouse------------------------------------------------------
+
+
 void Storehouse::receive_package(Package aPackage) {
 
-}
-
-int IPackageReceiver::get_type() {
-    return this->type;
 }
 
 ElementID Storehouse::get_id() {
@@ -110,6 +120,10 @@ ElementID Storehouse::get_id() {
 Storehouse::Storehouse(int id, std::unique_ptr<IPackageStockpile> d) {
     this->type = 2;
 }
+
+
+//--------------------------------------------Worker------------------------------------------------------
+
 
 void Worker::receive_package(Package aPackage) {
 
