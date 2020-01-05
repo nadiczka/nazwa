@@ -39,7 +39,7 @@ private:
 
 class ReceiverPreferences {
 public:
-    ReceiverPreferences(ProbabilityGenerator pg);
+    ReceiverPreferences(ProbabilityGenerator random_function);
     IPackageReceiver* choose_receiver();
     void add_receiver(IPackageReceiver* receiver);
     void remove_receiver(IPackageReceiver* receiver);
@@ -56,7 +56,7 @@ private:
 
 class PackageSender {
 public:
-    PackageSender(ReceiverPreferences receiver_preferences);
+    PackageSender(ReceiverPreferences receiver_preferences(random_function()));
     void send_package();
     std::optional<Package> get_sending_buffer();
     ReceiverPreferences receiver_preferences_;

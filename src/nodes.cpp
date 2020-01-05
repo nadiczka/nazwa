@@ -17,8 +17,8 @@ double pg() {
 }
 
 
-ReceiverPreferences::ReceiverPreferences(ProbabilityGenerator pg) {
-    ProbabilityGenerator rand_func = pg;
+ReceiverPreferences::ReceiverPreferences(ProbabilityGenerator random_function) {
+    ProbabilityGenerator rand_func = random_function;
 }
 
 void ReceiverPreferences::add_receiver(IPackageReceiver* receiver){
@@ -58,7 +58,7 @@ IPackageReceiver* ReceiverPreferences::choose_receiver() {
 //--------------------------------------------PackageSender------------------------------------------------------
 
 
-PackageSender::PackageSender(ReceiverPreferences receiver_preferences) {
+PackageSender::PackageSender(ReceiverPreferences receiver_preferences(random_function())) {
     receiver_preferences_ = receiver_preferences;
     bufer = std::nullopt;
 }
