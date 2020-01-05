@@ -24,8 +24,9 @@ void ReceiverPreferences::add_receiver(IPackageReceiver* receiver){
     if (preferences_.empty()){
         preferences_.insert(std::make_pair(receiver, 1));
     }
-    preferences_.insert(std::make_pair(receiver, rand_func));
-    double sum_probabilities = 1 + rand_func;
+    double new_probability = rand_func();
+    preferences_.insert(std::make_pair(receiver, new_probability));
+    double sum_probabilities = 1 + new_probability;
     for (auto& [key, value]: preferences_) {
         value = value/sum_probabilities;
     }

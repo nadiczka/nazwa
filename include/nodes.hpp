@@ -35,7 +35,7 @@ public:
     std::map<IPackageReceiver*,double>::const_iterator end() const { return preferences_.cend(); }
 private:
     std::map<IPackageReceiver*,double> preferences_;
-    ProbabilityGenerator rand_func;
+    ProbabilityGenerator  rand_func;
 };
 
 class PackageSender {
