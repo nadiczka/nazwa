@@ -41,7 +41,7 @@ private:
 
 class PackageSender {
 public:
-    PackageSender(ProbabilityGenerator PGen);
+    inline PackageSender(ProbabilityGenerator& PGen): receiver_preferences_(PGen){bufer = std::nullopt;}
     void send_package();
     std::optional<Package> get_sending_buffer();
     ReceiverPreferences receiver_preferences_;
@@ -52,7 +52,8 @@ protected:
 
 class Ramp: public PackageSender {
 public:
-    Ramp(ElementID id_, TimeOffset di, ProbabilityGenerator PGen);
+
+    Ramp(ElementID id_, TimeOffset di, ProbabilityGenerator& PGen): PackageSender(PGen), id(id_), delivery_interval(di) {}
     void deliver_goods(Time t);
     inline TimeOffset get_delivery_interval() { return delivery_interval; }
     inline ElementID get_id() const { return id; }
@@ -76,7 +77,7 @@ private:
 
 class Worker: public PackageSender, public IPackageReceiver {
 public:
-    Worker(ElementID id, TimeOffset pd, std::unique_ptr<PackageQueue> ptr, ProbabilityGenerator PGen);
+    Worker(ElementID id, TimeOffset pd, std::unique_ptr<PackageQueue> ptr, ProbabilityGenerator& PGen) : PackageSender(PGen), processing_durationWorker(pd), idWorker(id), ptrWorker(std::move(ptr)) {};
     void do_work(Time timeWorker);
     TimeOffset get_processing_duration() const;
     Time get_package_processing_start_time() const;

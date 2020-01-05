@@ -52,11 +52,6 @@ IPackageReceiver* ReceiverPreferences::choose_receiver() {
 //--------------------------------------------PackageSender------------------------------------------------------
 
 
-PackageSender::PackageSender(ProbabilityGenerator PGen) {
-    receiver_preferences_(PGen);
-    bufer = std::nullopt;
-}
-
 void PackageSender::push_package(Package&& package)
 {
     bufer.emplace(std::move(package));
@@ -79,12 +74,6 @@ void PackageSender::send_package()
 //--------------------------------------------Ramp------------------------------------------------------
 
 
-Ramp::Ramp(ElementID id_, TimeOffset di, ProbabilityGenerator PGen)
-{
-    PackageSender(PGen);
-    id = id_;
-    delivery_interval = di;
-}
 
 void Ramp::deliver_goods(Time t)
 {
@@ -97,13 +86,6 @@ void Ramp::deliver_goods(Time t)
 
 
 //--------------------------------------------Worker------------------------------------------------------
-
-Worker::Worker(ElementID id, TimeOffset pd, std::unique_ptr<PackageQueue> ptr, ProbabilityGenerator PGen){
-    PackageSender(PGen);
-    idWorker = id;
-    processing_durationWorker = pd;
-    ptrWorker = std::move(ptr);
-}
 
 
 void Worker::do_work(Time t){
