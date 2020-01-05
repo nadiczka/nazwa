@@ -41,7 +41,7 @@ class PackageQueue : public IPackageQueue {
 
 public:
     PackageQueue(PackageQueueType);
-
+    PackageQueue() = default;
     void push(Package &&elem) override;
     bool empty() const override;
     size_t size() const override;
