@@ -11,11 +11,6 @@
 std::random_device rd;
 std::mt19937 rng(rd());
 
-double pg() {
-    return std::generate_canonical<double, 10>(rng);
-}
-
-
 ReceiverPreferences::ReceiverPreferences(ProbabilityGenerator random_function) {
     rand_func = random_function;
 }
@@ -76,7 +71,7 @@ void PackageSender::send_package()
     if (bufer) {
         auto receiver = receiver_preferences_.choose_receiver();
         Package package = std::move(*bufer);
-        receiver->receive_package(package);
+        receiver->receive_package(std::move(package));
     }
 }
 
@@ -96,7 +91,7 @@ void Ramp::deliver_goods(Time t)
     if (t == delivery_interval)
     {
         Package package;
-        push_package(package);
+        push_package(std::move(package));
     }
 }
 
@@ -136,7 +131,7 @@ ElementID Worker::get_id() {
 }
 
 void Worker::receive_package(Package aPackage) {
-    ptrWorker->push(aPackage);
+    ptrWorker->push(std::move(aPackage));
 }
 
 
@@ -147,6 +142,6 @@ Storehouse::Storehouse(ElementID ID) : id(ID)
 }
 
 void Storehouse::receive_package(Package aPackage) {
-    stockpile->push(aPackage);
+    stockpile->push(std::move(aPackage));
 }
 

@@ -9,7 +9,7 @@
 #include <map>
 #include <functional>
 
-enum class Nodes {
+enum class ReciverType {
     WORKER, STORAGEHOUSE
 };
 
@@ -18,6 +18,7 @@ class IPackageReceiver {
 public:
     virtual ElementID get_id() = 0;
     virtual void receive_package(Package) = 0;
+    virtual ReciverType getReceiverType() const = 0;
 };
 
 
@@ -65,6 +66,7 @@ public:
     Storehouse(ElementID );
     void receive_package(Package aPackage) override;
     inline ElementID get_id() override { return id; }
+    inline ReciverType getReceiverType() const override { return ReciverType::STORAGEHOUSE; }
 private:
     ElementID id;
     std::unique_ptr<IPackageStockpile> stockpile;
@@ -80,6 +82,7 @@ public:
     Time get_package_processing_start_time() const;
     ElementID get_id() override;
     void receive_package(Package aPackage) override;
+    inline ReciverType getReceiverType() const override { return ReciverType::WORKER; }
 private:
     TimeOffset processing_durationWorker;
     ElementID idWorker;
