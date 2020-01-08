@@ -79,10 +79,10 @@ public:
     inline ElementID get_id() const override { return id; }
     inline ReceiverType getReceiverType() const override { return ReceiverType::STORAGEHOUSE; }
 
-    inline IPackageStockpile::const_iterator cbegin() const override { return ;};
-    inline IPackageStockpile::const_iterator cend() const override { return ;};
-    inline IPackageStockpile::const_iterator begin() const override { return ;};
-    inline IPackageStockpile::const_iterator end() const override { return ;};
+    inline IPackageStockpile::const_iterator cbegin() const override { return stockpile->cbegin();};
+    inline IPackageStockpile::const_iterator cend() const override { return stockpile->cend();};
+    inline IPackageStockpile::const_iterator begin() const override { return stockpile->cbegin();};
+    inline IPackageStockpile::const_iterator end() const override { return stockpile->cend();};
 private:
     ElementID id;
     std::unique_ptr<IPackageStockpile> stockpile;
@@ -99,10 +99,10 @@ public:
     inline ElementID get_id() const override { return idWorker; };
     void receive_package(Package aPackage) override;
     inline ReceiverType getReceiverType() const override { return ReceiverType::WORKER; };
-    inline IPackageStockpile::const_iterator cbegin() const override { return ;};
-    inline IPackageStockpile::const_iterator cend() const override { return ;};
-    inline IPackageStockpile::const_iterator begin() const override { return ;};
-    inline IPackageStockpile::const_iterator end() const override { return ;};
+    inline IPackageStockpile::const_iterator cbegin() const override { return ptrWorker->cbegin();};
+    inline IPackageStockpile::const_iterator cend() const override { return ptrWorker->cend();};
+    inline IPackageStockpile::const_iterator begin() const override { return ptrWorker->cbegin();};
+    inline IPackageStockpile::const_iterator end() const override { return ptrWorker->cend();};
 
 private:
     TimeOffset processing_durationWorker;
