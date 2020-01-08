@@ -1,9 +1,4 @@
 #include "nodes.hpp"
-#include <cstdlib>
-#include <ctime>
-#include <functional>
-#include <random>
-#include <map>
 
 
 //--------------------------------------------ReceiverPreferences------------------------------------------------------
@@ -110,10 +105,6 @@ Time Worker::get_package_processing_start_time() const {
     return timeWorker;
 }
 
-ElementID Worker::get_id() {
-    return idWorker;
-}
-
 void Worker::receive_package(Package aPackage) {
     ptrWorker->push(std::move(aPackage));
 }
@@ -128,4 +119,45 @@ Storehouse::Storehouse(ElementID ID) : id(ID)
 void Storehouse::receive_package(Package aPackage) {
     stockpile->push(std::move(aPackage));
 }
+/*
 
+//----------------------------------------------Factory------------------------------------------------------
+
+// -----------------------dla Rampy----------------------------
+void Factory::add_ramp(Ramp&& nramp) {
+    ramps.push_back(nramp);
+}
+void Factory::remove_ramp(ElementID id);
+NodeCollection<Ramp>::iterator Factory::find_ramp_by_id(ElementID id);
+NodeCollection<Ramp>::const_iterator Factory::find_ramp_by_id(ElementID id) const;
+NodeCollection<Ramp>::const_iterator Factory::ramp_cbegin() const;
+NodeCollection<Ramp>::const_iterator Factory::ramp_cend() const;
+
+// -----------------------dla Workera----------------------------
+void Factory::add_worker(Worker&& nwork) {
+    workers.push_back(nwork);
+}
+void Factory::remove_worker(ElementID id);
+NodeCollection<Worker>::iterator Factory::find_worker_by_id(ElementID id);
+NodeCollection<Worker>::const_iterator Factory::find_worker_by_id(ElementID id) const;
+NodeCollection<Worker>::const_iterator Factory::worker_cbegin() const;
+NodeCollection<Worker>::const_iterator Factory::worker_cend() const;
+
+// ----------------------dla Magazynu---------------------------
+void Factory::add_storehouse(Storehouse&& nstore) {
+    storehouses.push_back(nstore);
+}
+void Factory::remove_storehouse(ElementID id);
+NodeCollection<Storehouse>::iterator Factory::find_storehouse_by_id(ElementID id);
+NodeCollection<Storehouse>::const_iterator Factory::find_storehouse_by_id(ElementID id) const;
+NodeCollection<Storehouse>::const_iterator Factory::storehouse_cbegin() const;
+NodeCollection<Storehouse>::const_iterator Factory::storehouse_cend() const;
+
+// --------------------------ogolne-----------------------------
+void Factory::remove_receiver(NodeCollection<Node>& collection , ElementID id);
+bool Factory::is_consistent(void niewiemco);
+void Factory::do_deliveries(Time t);
+void Factory::do_package_passing(void tutezniewiem);
+void Factory::do_work(Time t);
+
+ */

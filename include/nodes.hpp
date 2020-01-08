@@ -1,24 +1,29 @@
 #ifndef SIMNET_NODES_HPP
 #define SIMNET_NODES_HPP
+
+
 #include <map>
+#include <functional>
+#include <cstdlib>
+#include <ctime>
+#include <functional>
+#include <random>
+#include <memory>
+
 #include "types.hpp"
 #include "package.hpp"
 #include "storage_types.hpp"
-#include <bits/unique_ptr.h>
-#include <memory>
-#include <map>
-#include <functional>
 
-enum class ReciverType {
+enum class ReceiverType {
     WORKER, STORAGEHOUSE
 };
 
 
 class IPackageReceiver {
 public:
-    virtual ElementID get_id() = 0;
+    virtual ElementID get_id() const = 0;
     virtual void receive_package(Package) = 0;
-    virtual ReciverType getReceiverType() const = 0;
+    virtual ReceiverType getReceiverType() const = 0;
 };
 
 
@@ -66,8 +71,8 @@ class Storehouse : public IPackageReceiver {
 public:
     Storehouse(ElementID );
     void receive_package(Package aPackage) override;
-    inline ElementID get_id() override { return id; }
-    inline ReciverType getReceiverType() const override { return ReciverType::STORAGEHOUSE; }
+    inline ElementID get_id() const override { return id; }
+    inline ReceiverType getReceiverType() const override { return ReceiverType::STORAGEHOUSE; }
 private:
     ElementID id;
     std::unique_ptr<IPackageStockpile> stockpile;
@@ -77,13 +82,13 @@ private:
 
 class Worker: public PackageSender, public IPackageReceiver {
 public:
-    Worker(ElementID id, TimeOffset pd, std::unique_ptr<PackageQueue> ptr, ProbabilityGenerator& PGen) : PackageSender(PGen), processing_durationWorker(pd), idWorker(id), ptrWorker(std::move(ptr)) {};
+    Worker(ElementID id, TimeOffset pd, std::unique_ptr<PackageQueue> ptr, ProbabilityGenerator& PGen) : PackageSender(PGen), processing_durationWorker(pd), idWorker(id), ptrWorker(std::move(ptr)) {bufor = std::nullopt;};
     void do_work(Time timeWorker);
     TimeOffset get_processing_duration() const;
     Time get_package_processing_start_time() const;
-    ElementID get_id() override;
+    inline ElementID get_id() const override { return idWorker; };
     void receive_package(Package aPackage) override;
-    inline ReciverType getReceiverType() const override { return ReciverType::WORKER; }
+    inline ReceiverType getReceiverType() const override { return ReceiverType::WORKER; }
 private:
     TimeOffset processing_durationWorker;
     ElementID idWorker;
@@ -91,5 +96,45 @@ private:
     std::optional <Package> bufor;
     Time timeWorker;
 };
+/*
+class Factory: public Ramp, public Worker, public Storehouse {
+public:
+    // -----------------------dla Rampy----------------------------
+    void add_ramp(Ramp&& nramp);
+    void remove_ramp(ElementID id);
+    NodeCollection<Ramp>::iterator find_ramp_by_id(ElementID id);
+    NodeCollection<Ramp>::const_iterator find_ramp_by_id(ElementID id) const;
+    NodeCollection<Ramp>::const_iterator ramp_cbegin() const;
+    NodeCollection<Ramp>::const_iterator ramp_cend() const;
+
+    // -----------------------dla Workera----------------------------
+    void add_worker(Worker&& nwork);
+    void remove_worker(ElementID id);
+    NodeCollection<Worker>::iterator find_worker_by_id(ElementID id);
+    NodeCollection<Worker>::const_iterator find_worker_by_id(ElementID id) const;
+    NodeCollection<Worker>::const_iterator worker_cbegin() const;
+    NodeCollection<Worker>::const_iterator worker_cend() const;
+
+    // ----------------------dla Magazynu---------------------------
+    void add_storehouse(Storehouse&& nstore);
+    void remove_storehouse(ElementID id);
+    NodeCollection<Storehouse>::iterator find_storehouse_by_id(ElementID id);
+    NodeCollection<Storehouse>::const_iterator find_storehouse_by_id(ElementID id) const;
+    NodeCollection<Storehouse>::const_iterator storehouse_cbegin() const;
+    NodeCollection<Storehouse>::const_iterator storehouse_cend() const;
+
+    // --------------------------ogolne-----------------------------
+    void remove_receiver(NodeCollection<Node>& collection , ElementID id);
+    bool is_consistent(void niewiemco);
+    void do_deliveries(Time t);
+    void do_package_passing(void tutezniewiem);
+    void do_work(Time t);
+private:
+    std::list<Ramp> ramps;
+    std::list<Worker> workers;
+    std::list<Storehouse> storehouses;
+
+};
+*/
 
 #endif //SIMNET_NODES_HPP
