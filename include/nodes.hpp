@@ -24,6 +24,11 @@ public:
     virtual ElementID get_id() const = 0;
     virtual void receive_package(Package) = 0;
     virtual ReceiverType getReceiverType() const = 0;
+
+    virtual IPackageStockpile::const_iterator cbegin() const = 0;
+    virtual IPackageStockpile::const_iterator cend() const = 0;
+    virtual IPackageStockpile::const_iterator begin() const = 0;
+    virtual IPackageStockpile::const_iterator end() const = 0;
 };
 
 
@@ -69,10 +74,15 @@ private:
 
 class Storehouse : public IPackageReceiver {
 public:
-    Storehouse(ElementID );
+    Storehouse(ElementID);
     void receive_package(Package aPackage) override;
     inline ElementID get_id() const override { return id; }
     inline ReceiverType getReceiverType() const override { return ReceiverType::STORAGEHOUSE; }
+
+    inline IPackageStockpile::const_iterator cbegin() const override { return ;};
+    inline IPackageStockpile::const_iterator cend() const override { return ;};
+    inline IPackageStockpile::const_iterator begin() const override { return ;};
+    inline IPackageStockpile::const_iterator end() const override { return ;};
 private:
     ElementID id;
     std::unique_ptr<IPackageStockpile> stockpile;
@@ -88,7 +98,12 @@ public:
     Time get_package_processing_start_time() const;
     inline ElementID get_id() const override { return idWorker; };
     void receive_package(Package aPackage) override;
-    inline ReceiverType getReceiverType() const override { return ReceiverType::WORKER; }
+    inline ReceiverType getReceiverType() const override { return ReceiverType::WORKER; };
+    inline IPackageStockpile::const_iterator cbegin() const override { return ;};
+    inline IPackageStockpile::const_iterator cend() const override { return ;};
+    inline IPackageStockpile::const_iterator begin() const override { return ;};
+    inline IPackageStockpile::const_iterator end() const override { return ;};
+
 private:
     TimeOffset processing_durationWorker;
     ElementID idWorker;
