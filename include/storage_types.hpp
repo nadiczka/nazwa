@@ -35,7 +35,6 @@ private:
 
 
 class IPackageQueue : public IPackageStockpile {
-
 public:
     virtual PackageQueueType get_queue_type() const = 0;
     virtual Package pop() = 0;
@@ -45,7 +44,6 @@ private:
 
 
 class PackageQueue : public IPackageQueue {
-
 public:
     PackageQueue(PackageQueueType);
     PackageQueue() = default;
@@ -59,8 +57,6 @@ public:
     inline const_iterator cend() const override {return _list.cend();};
     inline const_iterator begin() const override {return _list.begin();};
     inline const_iterator end() const override {return _list.end();};
-
-
 private:
     PackageQueueType _QueueType;
     std::list<Package> _list;
