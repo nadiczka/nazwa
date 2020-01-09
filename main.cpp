@@ -10,14 +10,9 @@
 
 int main() {
 
-    ProbabilityGenerator f1 = []() { return 3.14; };
-
     PackageQueue QL(PackageQueueType::FIFO);
 
-    std::unique_ptr<PackageQueue> wsk(&QL);
-
-
-    Worker W1(1, 2, std::make_unique<PackageQueue>(PackageQueueType::FIFO), f1);
+    Worker W1(1, 2, std::make_unique<PackageQueue>(PackageQueueType::FIFO));
 
 
     return EXIT_SUCCESS;

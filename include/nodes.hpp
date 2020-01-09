@@ -13,6 +13,7 @@
 #include "types.hpp"
 #include "package.hpp"
 #include "storage_types.hpp"
+#include "helpers.hpp"
 
 enum class ReceiverType {
     WORKER, STORAGEHOUSE
@@ -34,15 +35,14 @@ public:
 
 class ReceiverPreferences {
 public:
-    ReceiverPreferences(ProbabilityGenerator random_function);
+    ReceiverPreferences(ProbabilityGenerator random_function = probability_generator) {rand_func = random_function;};
     IPackageReceiver* choose_receiver();
     void add_receiver(IPackageReceiver* receiver);
     void remove_receiver(IPackageReceiver* receiver);
+
     std::map<IPackageReceiver*,double>::const_iterator cbegin() const { return preferences_.cbegin(); }
     std::map<IPackageReceiver*,double>::const_iterator cend() const { return preferences_.cend(); }
-    std::map<IPackageReceiver*,double>::iterator begin() { return preferences_.begin(); }
     std::map<IPackageReceiver*,double>::const_iterator begin() const { return preferences_.cbegin(); }
-    std::map<IPackageReceiver*,double>::iterator end() { return preferences_.end(); }
     std::map<IPackageReceiver*,double>::const_iterator end() const { return preferences_.cend(); }
 private:
     std::map<IPackageReceiver*,double> preferences_;
@@ -51,7 +51,7 @@ private:
 
 class PackageSender {
 public:
-    inline PackageSender(ProbabilityGenerator& PGen): receiver_preferences_(PGen){bufer = std::nullopt;}
+    inline PackageSender() {bufer = std::nullopt;}
     void send_package();
     std::optional<Package> get_sending_buffer();
     ReceiverPreferences receiver_preferences_;
@@ -63,7 +63,7 @@ protected:
 class Ramp: public PackageSender {
 public:
 
-    Ramp(ElementID id_, TimeOffset di, ProbabilityGenerator& PGen): PackageSender(PGen), id(id_), delivery_interval(di) {}
+    Ramp(ElementID id_, TimeOffset di): PackageSender(), id(id_), delivery_interval(di) {}
     void deliver_goods(Time t);
     inline TimeOffset get_delivery_interval() { return delivery_interval; }
     inline ElementID get_id() const { return id; }
@@ -76,8 +76,8 @@ class Storehouse : public IPackageReceiver {
 public:
     Storehouse(ElementID);
     void receive_package(Package aPackage) override;
-    inline ElementID get_id() const override { return id; }
-    inline ReceiverType getReceiverType() const override { return ReceiverType::STORAGEHOUSE; }
+    inline ElementID get_id() const override { return id; };
+    inline ReceiverType getReceiverType() const override { return ReceiverType::STORAGEHOUSE; };
 
     inline IPackageStockpile::const_iterator cbegin() const override { return stockpile->cbegin();};
     inline IPackageStockpile::const_iterator cend() const override { return stockpile->cend();};
@@ -92,7 +92,7 @@ private:
 
 class Worker: public PackageSender, public IPackageReceiver {
 public:
-    Worker(ElementID id, TimeOffset pd, std::unique_ptr<PackageQueue> ptr, ProbabilityGenerator& PGen) : PackageSender(PGen), processing_durationWorker(pd), idWorker(id), ptrWorker(std::move(ptr)) {bufor = std::nullopt;};
+    Worker(ElementID id, TimeOffset pd, std::unique_ptr<PackageQueue> ptr) : PackageSender(), processing_durationWorker(pd), idWorker(id), ptrWorker(std::move(ptr)) {bufor = std::nullopt;};
     void do_work(Time timeWorker);
     TimeOffset get_processing_duration() const;
     Time get_package_processing_start_time() const;

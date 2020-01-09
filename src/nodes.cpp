@@ -3,13 +3,6 @@
 
 //--------------------------------------------ReceiverPreferences------------------------------------------------------
 
-std::random_device rd;
-std::mt19937 rng(rd());
-
-ReceiverPreferences::ReceiverPreferences(ProbabilityGenerator random_function) {
-    rand_func = random_function;
-}
-
 void ReceiverPreferences::add_receiver(IPackageReceiver* receiver){
     if (preferences_.empty()){
         preferences_.insert(std::make_pair(receiver, 1));
@@ -119,6 +112,7 @@ Storehouse::Storehouse(ElementID ID) : id(ID)
 void Storehouse::receive_package(Package aPackage) {
     stockpile->push(std::move(aPackage));
 }
+// 39 numer
 /*
 
 //----------------------------------------------Factory------------------------------------------------------
