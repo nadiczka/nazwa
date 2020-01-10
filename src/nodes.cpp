@@ -46,6 +46,7 @@ void PackageSender::push_package(Package&& package)
 {
     bufer.emplace(std::move(package));
 }
+
 std::optional<Package>& PackageSender::get_sending_buffer()
 {
     return bufer;

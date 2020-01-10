@@ -34,15 +34,19 @@ public:
 
 class ReceiverPreferences {
 public:
+    using preferences_t = std::map<IPackageReceiver*, double>;
+    using const_iterator = preferences_t::const_iterator;
+
     ReceiverPreferences(ProbabilityGenerator random_function = probability_generator) {rand_func = random_function;};
     IPackageReceiver* choose_receiver();
     void add_receiver(IPackageReceiver* receiver);
     void remove_receiver(IPackageReceiver* receiver);
-    std::map<IPackageReceiver*,double>& get_preferences() const { return preferences_};
-    std::map<IPackageReceiver*,double>::const_iterator cbegin() const { return preferences_.cbegin(); }
-    std::map<IPackageReceiver*,double>::const_iterator cend() const { return preferences_.cend(); }
-    std::map<IPackageReceiver*,double>::const_iterator begin() const { return preferences_.cbegin(); }
-    std::map<IPackageReceiver*,double>::const_iterator end() const { return preferences_.cend(); }
+    inline preferences_t& get_preferences() { return preferences_;};
+
+    const_iterator cbegin() const { return preferences_.cbegin(); };
+    const_iterator cend() const { return preferences_.cend(); };
+    const_iterator begin() const { return preferences_.cbegin(); };
+    const_iterator end() const { return preferences_.cend(); };
 private:
     std::map<IPackageReceiver*,double> preferences_;
     ProbabilityGenerator  rand_func;
