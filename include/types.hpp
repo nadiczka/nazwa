@@ -1,6 +1,7 @@
 #ifndef SIMNET_TYPES_HPP
 #define SIMNET_TYPES_HPP
 #include <functional>
+#include "storage_types.hpp"
 
 using ElementID = int;
 

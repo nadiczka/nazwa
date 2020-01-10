@@ -46,9 +46,9 @@ void PackageSender::push_package(Package&& package)
 {
     bufer.emplace(std::move(package));
 }
-std::optional<Package> PackageSender::get_sending_buffer()
+std::optional<Package>& PackageSender::get_sending_buffer()
 {
-    return std::move(bufer);
+    return bufer;
 }
 
 void PackageSender::send_package()
@@ -98,7 +98,7 @@ Time Worker::get_package_processing_start_time() const {
     return timeWorker;
 }
 
-void Worker::receive_package(Package aPackage) {
+void Worker::receive_package(Package&& aPackage) {
     ptrWorker->push(std::move(aPackage));
 }
 
@@ -109,7 +109,7 @@ Storehouse::Storehouse(ElementID ID) : id(ID)
     stockpile = std::make_unique<PackageQueue>();
 }
 
-void Storehouse::receive_package(Package aPackage) {
+void Storehouse::receive_package(Package&& aPackage) {
     stockpile->push(std::move(aPackage));
 }
 // 39 numer

@@ -22,12 +22,10 @@ public:
     virtual bool empty() const = 0;
     virtual size_t size() const = 0 ;
 
-    using const_iterator = std::list<Package>::const_iterator;
-
-    virtual const_iterator cbegin() const = 0;
-    virtual const_iterator cend() const = 0;
-    virtual const_iterator begin() const = 0;
-    virtual const_iterator end() const = 0;
+    virtual std::list<Package>::const_iterator cbegin() const = 0;
+    virtual std::list<Package>::const_iterator cend() const = 0;
+    virtual std::list<Package>::const_iterator begin() const = 0;
+    virtual std::list<Package>::const_iterator end() const = 0;
 
 private:
 
@@ -53,10 +51,10 @@ public:
     Package pop() override;
     inline PackageQueueType get_queue_type() const override { return _QueueType; };
 
-    inline const_iterator cbegin() const override {return _list.cbegin();};
-    inline const_iterator cend() const override {return _list.cend();};
-    inline const_iterator begin() const override {return _list.begin();};
-    inline const_iterator end() const override {return _list.end();};
+    inline std::list<Package>::const_iterator cbegin() const override {return _list.cbegin();};
+    inline std::list<Package>::const_iterator cend() const override {return _list.cend();};
+    inline std::list<Package>::const_iterator begin() const override {return _list.begin();};
+    inline std::list<Package>::const_iterator end() const override {return _list.end();};
 private:
     PackageQueueType _QueueType;
     std::list<Package> _list;
