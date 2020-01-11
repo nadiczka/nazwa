@@ -5,7 +5,7 @@
 
 #include "types.hpp"
 
-/**
+/*
  * Ponieważ w myśl założeń projektowych w systemie nie mogą istnieć dwa
  * półprodukty o tym samym ID, konstruktor kopiujący oraz operator przypisania
  * zostały oznaczone jako usunięte.

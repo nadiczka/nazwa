@@ -37,16 +37,16 @@ public:
     using preferences_t = std::map<IPackageReceiver*, double>;
     using const_iterator = preferences_t::const_iterator;
 
-    ReceiverPreferences(ProbabilityGenerator random_function = probability_generator) {rand_func = random_function;};
+    ReceiverPreferences(ProbabilityGenerator random_function = probability_generator) {rand_func = random_function;}
     IPackageReceiver* choose_receiver();
     void add_receiver(IPackageReceiver* receiver);
     void remove_receiver(IPackageReceiver* receiver);
-    inline preferences_t& get_preferences() { return preferences_;};
+    inline preferences_t& get_preferences() { return preferences_;}
 
-    const_iterator cbegin() const { return preferences_.cbegin(); };
-    const_iterator cend() const { return preferences_.cend(); };
-    const_iterator begin() const { return preferences_.cbegin(); };
-    const_iterator end() const { return preferences_.cend(); };
+    inline const_iterator cbegin() const { return preferences_.cbegin(); }
+    inline const_iterator cend() const { return preferences_.cend(); }
+    inline const_iterator begin() const { return preferences_.cbegin(); }
+    inline const_iterator end() const { return preferences_.cend(); }
 private:
     std::map<IPackageReceiver*,double> preferences_;
     ProbabilityGenerator  rand_func;
@@ -55,6 +55,7 @@ private:
 class PackageSender {
 public:
     inline PackageSender() {bufer = std::nullopt;}
+    PackageSender(PackageSender&&)=default;
     void send_package();
     std::optional<Package>& get_sending_buffer();
     ReceiverPreferences receiver_preferences_;
@@ -77,7 +78,8 @@ private:
 
 class Storehouse : public IPackageReceiver {
 public:
-    Storehouse(ElementID);
+    Storehouse(ElementID ID): id(ID) {stockpile = std::make_unique<PackageQueue>();}
+    Storehouse(ElementID ID, std::unique_ptr<PackageQueue> ptr = std::make_unique<PackageQueue>()) : id(ID), stockpile(std::move(ptr)) {}
     void receive_package(Package&& aPackage) override;
     inline ElementID get_id() const override { return id; };
     inline ReceiverType getReceiverType() const { return ReceiverType::STORAGEHOUSE; };
@@ -96,7 +98,7 @@ private:
 class Worker: public PackageSender, public IPackageReceiver {
 public:
     Worker(ElementID id, TimeOffset pd, std::unique_ptr<PackageQueue> ptr) : PackageSender(), processing_durationWorker(pd), idWorker(id), ptrWorker(std::move(ptr)) {bufor = std::nullopt;};
-    void do_work(Time timeWorker);
+    void do_work(Time timePackage);
     TimeOffset get_processing_duration() const;
     Time get_package_processing_start_time() const;
     inline ElementID get_id() const override { return idWorker; };
@@ -113,7 +115,7 @@ private:
     ElementID idWorker;
     std::unique_ptr <PackageQueue> ptrWorker;
     std::optional <Package> bufor;
-    Time timeWorker;
+    Time timePackage = 0;
 };
 /*
 class Factory: public Ramp, public Worker, public Storehouse {

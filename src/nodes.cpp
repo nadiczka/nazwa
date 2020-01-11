@@ -58,6 +58,7 @@ void PackageSender::send_package()
         auto receiver = receiver_preferences_.choose_receiver();
         Package package = std::move(*bufer);
         receiver->receive_package(std::move(package));
+        bufer.reset();
     }
 }
 
@@ -65,30 +66,32 @@ void PackageSender::send_package()
 //--------------------------------------------Ramp------------------------------------------------------
 
 
-
 void Ramp::deliver_goods(Time t)
 {
-    if (t == delivery_interval)
-    {
+    if(!bufer) {
         Package package;
         push_package(std::move(package));
+    }
+
+    if (t%delivery_interval == 0)
+    {
+        send_package();
     }
 }
 
 
 //--------------------------------------------Worker------------------------------------------------------
 
-
 void Worker::do_work(Time t){
-    if (t == 0)
-    {
-        if(bufor)
-        {
-            push_package(std::move(*bufor));
-            bufor.reset();
-        }
-        bufor.emplace(ptrWorker->pop());
+    if (!(ptrWorker -> empty()) && !bufor) {
+        bufor = ptrWorker -> pop();
+        timePackage = t;
     }
+    if(t-timePackage == processing_durationWorker-1 && bufor) {
+        push_package(std::move(*bufor));
+        bufor.reset();
+    }
+
 }
 
 TimeOffset Worker::get_processing_duration() const {
@@ -96,7 +99,7 @@ TimeOffset Worker::get_processing_duration() const {
 }
 
 Time Worker::get_package_processing_start_time() const {
-    return timeWorker;
+    return timePackage;
 }
 
 void Worker::receive_package(Package&& aPackage) {
@@ -105,10 +108,6 @@ void Worker::receive_package(Package&& aPackage) {
 
 
 //--------------------------------------------Storehouse------------------------------------------------------
-Storehouse::Storehouse(ElementID ID) : id(ID)
-{
-    stockpile = std::make_unique<PackageQueue>();
-}
 
 void Storehouse::receive_package(Package&& aPackage) {
     stockpile->push(std::move(aPackage));
