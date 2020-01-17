@@ -8,7 +8,7 @@ add_compile_options(-Wall -Wextra -Werror -Wpedantic -pedantic-errors)
 include_directories(include)
 
 set(SOURCE_FILES
-        src/package.cpp src/storage_types.cpp src/nodes.cpp src/helpers.cpp)
+        src/package.cpp src/storage_types.cpp src/nodes.cpp src/helpers.cpp src/factory.cpp)
 
 add_executable(SimNet ${SOURCE_FILES} main.cpp)
 
@@ -32,6 +32,7 @@ set(HEADER_FILES
         include/storage_types.hpp
         include/global_functions_mock.hpp
         include/nodes+mocks.hpp
+        include/factory.hpp
         )
 
 add_executable(SimNet_test ${SOURCE_FILES} ${SOURCES_FILES_TESTS} test/main_gtest.cpp)

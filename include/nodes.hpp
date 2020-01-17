@@ -16,7 +16,7 @@
 #include "helpers.hpp"
 
 enum class ReceiverType {
-    WORKER, STORAGEHOUSE
+    WORKER, STOREHOUSE
 };
 
 
@@ -82,7 +82,7 @@ public:
     Storehouse(ElementID ID, std::unique_ptr<PackageQueue> ptr = std::make_unique<PackageQueue>()) : id(ID), stockpile(std::move(ptr)) {}
     void receive_package(Package&& aPackage) override;
     inline ElementID get_id() const override { return id; };
-    inline ReceiverType getReceiverType() const { return ReceiverType::STORAGEHOUSE; };
+    inline ReceiverType get_receiver_type() const { return ReceiverType::STOREHOUSE; };
 
     inline IPackageStockpile::const_iterator cbegin() const override { return stockpile->cbegin();};
     inline IPackageStockpile::const_iterator cend() const override { return stockpile->cend();};
@@ -104,7 +104,7 @@ public:
     inline ElementID get_id() const override { return idWorker; };
     void receive_package(Package&& aPackage) override;
 
-    inline ReceiverType getReceiverType() const { return ReceiverType::WORKER; };
+    inline ReceiverType get_receiver_type() const { return ReceiverType::WORKER; };
     inline IPackageStockpile::const_iterator cbegin() const override { return ptrWorker->cbegin();};
     inline IPackageStockpile::const_iterator cend() const override { return ptrWorker->cend();};
     inline IPackageStockpile::const_iterator begin() const override { return ptrWorker->cbegin();};
@@ -119,46 +119,5 @@ private:
 };
 
 
-
-/*
-class Factory: public Ramp, public Worker, public Storehouse {
-public:
-    // -----------------------dla Rampy----------------------------
-    void add_ramp(Ramp&& nramp);
-    void remove_ramp(ElementID id);
-    NodeCollection<Ramp>::iterator find_ramp_by_id(ElementID id);
-    NodeCollection<Ramp>::const_iterator find_ramp_by_id(ElementID id) const;
-    NodeCollection<Ramp>::const_iterator ramp_cbegin() const;
-    NodeCollection<Ramp>::const_iterator ramp_cend() const;
-
-    // -----------------------dla Workera----------------------------
-    void add_worker(Worker&& nwork);
-    void remove_worker(ElementID id);
-    NodeCollection<Worker>::iterator find_worker_by_id(ElementID id);
-    NodeCollection<Worker>::const_iterator find_worker_by_id(ElementID id) const;
-    NodeCollection<Worker>::const_iterator worker_cbegin() const;
-    NodeCollection<Worker>::const_iterator worker_cend() const;
-
-    // ----------------------dla Magazynu---------------------------
-    void add_storehouse(Storehouse&& nstore);
-    void remove_storehouse(ElementID id);
-    NodeCollection<Storehouse>::iterator find_storehouse_by_id(ElementID id);
-    NodeCollection<Storehouse>::const_iterator find_storehouse_by_id(ElementID id) const;
-    NodeCollection<Storehouse>::const_iterator storehouse_cbegin() const;
-    NodeCollection<Storehouse>::const_iterator storehouse_cend() const;
-
-    // --------------------------ogolne-----------------------------
-    void remove_receiver(NodeCollection<Node>& collection , ElementID id);
-    bool is_consistent(void niewiemco);
-    void do_deliveries(Time t);
-    void do_package_passing(void tutezniewiem);
-    void do_work(Time t);
-private:
-    std::list<Ramp> ramps;
-    std::list<Worker> workers;
-    std::list<Storehouse> storehouses;
-
-};
-*/
 
 #endif //SIMNET_NODES_HPP
