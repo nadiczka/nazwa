@@ -4,15 +4,24 @@
 //--------------------------------------------ReceiverPreferences------------------------------------------------------
 
 void ReceiverPreferences::add_receiver(IPackageReceiver* receiver){
-    if (preferences_.empty()){
-        preferences_.insert(std::make_pair(receiver, 1));
+    preferences_.emplace(std::make_pair(receiver, 1));
+
+
+    double sum = 0;
+    for(const auto &item: preferences_) {
+        sum+=item.second;
     }
-    double new_probability = rand_func();
+
+    for( auto &item: preferences_) {
+        item.second /= sum;
+    }
+
+    /*double new_probability = rand_func();
     preferences_.insert(std::make_pair(receiver, new_probability));
     double sum_probabilities = 1 + new_probability;
     for (auto& [key, value]: preferences_) {
         value = value/sum_probabilities;
-    }
+    }*/
 }
 
 void ReceiverPreferences::remove_receiver(IPackageReceiver* receiver) {
