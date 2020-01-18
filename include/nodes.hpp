@@ -24,7 +24,7 @@ class IPackageReceiver {
 public:
     virtual ElementID get_id() const = 0;
     virtual void receive_package(Package&& p) = 0;
-
+    virtual ReceiverType get_receiver_type() const = 0;
     virtual IPackageStockpile::const_iterator cbegin() const = 0;
     virtual IPackageStockpile::const_iterator cend() const = 0;
     virtual IPackageStockpile::const_iterator begin() const = 0;
@@ -41,7 +41,8 @@ public:
     IPackageReceiver* choose_receiver();
     void add_receiver(IPackageReceiver* receiver);
     void remove_receiver(IPackageReceiver* receiver);
-    inline preferences_t& get_preferences() { return preferences_;}
+    inline const preferences_t& get_preferences() const { return preferences_; }
+    inline void set_preferences(preferences_t pref) { preferences_ = pref;};
 
     inline const_iterator cbegin() const { return preferences_.cbegin(); }
     inline const_iterator cend() const { return preferences_.cend(); }
@@ -78,11 +79,10 @@ private:
 
 class Storehouse : public IPackageReceiver {
 public:
-    Storehouse(ElementID ID): id(ID) {stockpile = std::make_unique<PackageQueue>();}
     Storehouse(ElementID ID, std::unique_ptr<PackageQueue> ptr = std::make_unique<PackageQueue>()) : id(ID), stockpile(std::move(ptr)) {}
     void receive_package(Package&& aPackage) override;
     inline ElementID get_id() const override { return id; };
-    inline ReceiverType get_receiver_type() const { return ReceiverType::STOREHOUSE; };
+    inline ReceiverType get_receiver_type() const override { return ReceiverType::STOREHOUSE; };
 
     inline IPackageStockpile::const_iterator cbegin() const override { return stockpile->cbegin();};
     inline IPackageStockpile::const_iterator cend() const override { return stockpile->cend();};
@@ -104,7 +104,7 @@ public:
     inline ElementID get_id() const override { return idWorker; };
     void receive_package(Package&& aPackage) override;
 
-    inline ReceiverType get_receiver_type() const { return ReceiverType::WORKER; };
+    inline ReceiverType get_receiver_type() const override { return ReceiverType::WORKER; };
     inline IPackageStockpile::const_iterator cbegin() const override { return ptrWorker->cbegin();};
     inline IPackageStockpile::const_iterator cend() const override { return ptrWorker->cend();};
     inline IPackageStockpile::const_iterator begin() const override { return ptrWorker->cbegin();};

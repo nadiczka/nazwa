@@ -9,12 +9,7 @@
 #include "types.hpp"
 
 int main() {
-
-    PackageQueue QL(PackageQueueType::FIFO);
-
-    Worker W1(1, 2, std::make_unique<PackageQueue>(PackageQueueType::FIFO));
-
-
+    
     return EXIT_SUCCESS;
 }
 

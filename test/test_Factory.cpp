@@ -1,4 +1,3 @@
-/*
 //#include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
@@ -140,4 +139,3 @@ TEST(FactoryTest, RemoveWorkerTwoRemainingReceivers) {
     ASSERT_NE(it, prefs.end());
     EXPECT_DOUBLE_EQ(it->second, 1.0 / 2.0);
 }
-*/

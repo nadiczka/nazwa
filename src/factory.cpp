@@ -6,35 +6,36 @@
 #include "types.hpp"
 
 
-bool has_reachable_storehouse(const PackageSender* sender, std::map<const PackageSender*, NodeColor>& node_colors){
-    if(node_colors[sender] == NodeColor::VERIFIED)
-        return true;
-    node_colors[sender] = NodeColor::VISITED;
 
-    if(sender->receiver_preferences_.get_preferences().empty())
+bool storehouse_is_avaliable(const PackageSender* packsender, std::map<const PackageSender*, NodeColor>& color){
+    if(color[packsender] == NodeColor::VERIFIED)
+        return true;
+    color[packsender] = NodeColor::VISITED;
+
+    if(packsender->receiver_preferences_.get_preferences().empty())
         return false;
 
-    bool has_receiver_flag = false;
-    bool has_storehouse_reachable = false;
+    bool other_receiver = false;
+    bool reachable_storehouse = false;
     int bad_nodes = 0;
-    for(auto receiver : sender->receiver_preferences_.get_preferences()) {
+    for(auto receiver : packsender->receiver_preferences_.get_preferences()) {
         if (receiver.first->get_receiver_type() == ReceiverType::STOREHOUSE){
-            has_receiver_flag = true;
-            has_storehouse_reachable = true;
+            other_receiver = true;
+            reachable_storehouse = true;
         }
         else{
             auto worker_ptr = dynamic_cast<Worker*>(receiver.first);
-            if(worker_ptr == sender)
+            if(worker_ptr == packsender)
                 continue;
-            has_receiver_flag = true;
+            other_receiver = true;
             auto sendrecv_ptr = dynamic_cast<PackageSender*>(worker_ptr);
-            if(node_colors[sendrecv_ptr] == NodeColor::UNVISITED)
-                has_storehouse_reachable = has_reachable_storehouse(sendrecv_ptr, node_colors);
+            if(color[sendrecv_ptr] == NodeColor::UNVISITED)
+                reachable_storehouse = storehouse_is_avaliable(sendrecv_ptr, color);
         }
-        if(!has_storehouse_reachable || !has_receiver_flag)bad_nodes++;
+        if(!reachable_storehouse || !other_receiver)bad_nodes++;
     }
-    node_colors[sender] = NodeColor::VERIFIED;
-    if(has_storehouse_reachable && has_receiver_flag && bad_nodes == 0)
+    color[packsender] = NodeColor::VERIFIED;
+    if(reachable_storehouse && other_receiver && !bad_nodes)
         return true;
     else return false;
 }
@@ -55,7 +56,7 @@ bool Factory::is_consistent() const {
     for(auto& rampy: ramps) {
         try {
 
-            if(!has_reachable_storehouse(&rampy,node_colors))
+            if(!storehouse_is_avaliable(&rampy,node_colors))
                 return false;
         } catch (std::logic_error())
         { return false; }

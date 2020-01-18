@@ -19,30 +19,31 @@ enum class NodeColor{
 template <typename Node>
 class NodeCollection{
 public:
-    //aliasy
+
     using container_t = typename std::list<Node>;
     using iterator = typename container_t::iterator;
     using const_iterator = typename container_t::const_iterator;
-    //gettery
-    NodeCollection<Node>::iterator find_by_id(ElementID id_) { return std::find_if(fContainer_.begin(), fContainer_.end(), [id_](const Node& x){ return id_ == elem.get_id();});}
-    NodeCollection<Node>::const_iterator find_by_id(ElementID id_) const { return std::find_if(fContainer_.cbegin(), fContainer_.cend(), [id_](const Node& x){ return id_ == elem.get_id();}); }
 
-    NodeCollection<Node>::iterator begin(){ return fContainer_.begin(); }
-    NodeCollection<Node>::iterator end(){ return fContainer_.end(); }
-    NodeCollection<Node>::const_iterator begin() const{ return fContainer_.cbegin(); }
-    NodeCollection<Node>::const_iterator cbegin() const{ return fContainer_.cbegin(); }
-    NodeCollection<Node>::const_iterator end() const{ return fContainer_.cend(); }
-    NodeCollection<Node>::const_iterator cend() const{ return fContainer_.cend(); }
-    //settery
-    void add(Node& node) { fContainer_.emplace_back(std::move(node));}
-    void remove_by_id(ElementID id_)
-    {
-        auto it = find_by_id(id_);
-        if(it != fContainer_.end())
-            fContainer_.erase(it,++it);
-    }
+    inline NodeCollection<Node>::iterator find_by_id(ElementID id_) {return std::find_if(list_of_nodes.begin(), list_of_nodes.end(), [id_](const Node& el){ return id_ == el.get_id();});}
+    inline NodeCollection<Node>::const_iterator find_by_id(ElementID id_) const {return std::find_if(list_of_nodes.cbegin(), list_of_nodes.cend(), [id_](const Node& el){ return id_ == el.get_id();});}
+
+    inline void add(Node& node) { list_of_nodes.emplace_back(std::move(node));}
+    void remove_by_id(ElementID id_) {
+        auto el = NodeCollection<Node>::find_by_id(id_);
+        if(el != list_of_nodes.end())
+            list_of_nodes.erase(el,++el);
+    };
+
+    inline NodeCollection<Node>::iterator begin() {return list_of_nodes.begin();}
+    inline NodeCollection<Node>::iterator end() {return list_of_nodes.end();}
+    inline NodeCollection<Node>::const_iterator begin() const {return list_of_nodes.cbegin();}
+    inline NodeCollection<Node>::const_iterator cbegin() const {return list_of_nodes.cbegin();}
+    inline NodeCollection<Node>::const_iterator end() const {return list_of_nodes.cend();}
+    inline NodeCollection<Node>::const_iterator cend() const {return list_of_nodes.cend();}
+
+
 private:
-    container_t fContainer_;
+    container_t list_of_nodes;
 };
 
 class Factory{
